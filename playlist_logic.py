@@ -1,3 +1,4 @@
+import random
 from typing import Dict, List, Optional, Tuple
 
 Song = Dict[str, object]
@@ -11,6 +12,10 @@ DEFAULT_PROFILE = {
     "include_mixed": True,
 }
 
+GENRES = ["rock", "lofi", "pop", "jazz", "electronic", "ambient", "other"]
+
+HYPE_KEYWORDS = ["rock", "punk", "party"]
+CHILL_KEYWORDS = ["lofi", "ambient", "sleep"]
 
 def normalize_title(title: str) -> str:
     """Normalize a song title for comparisons."""
@@ -67,11 +72,8 @@ def classify_song(song: Song, profile: Dict[str, object]) -> str:
     chill_max_energy = profile.get("chill_max_energy", 3)
     favorite_genre = profile.get("favorite_genre", "")
 
-    hype_keywords = ["rock", "punk", "party"]
-    chill_keywords = ["lofi", "ambient", "sleep"]
-
-    is_hype_keyword = any(k in genre for k in hype_keywords)
-    is_chill_keyword = any(k in genre for k in chill_keywords)
+    is_hype_keyword = any(k in genre for k in HYPE_KEYWORDS)
+    is_chill_keyword = any(k in genre for k in CHILL_KEYWORDS)
 
     if genre == favorite_genre or energy >= hype_min_energy or is_hype_keyword:
         return "Hype"
@@ -191,8 +193,6 @@ def lucky_pick(
 
 def random_choice_or_none(songs: List[Song]) -> Optional[Song]:
     """Return a random song or None."""
-    import random
-
     if not songs:
         return None
     return random.choice(songs)
@@ -225,6 +225,6 @@ def update_profile(profile: Dict[str, object]) -> Dict[str, object]:
 
     profile["favorite_genre"] = st.sidebar.selectbox(
         "Favorite genre",
-        options=["rock", "lofi", "pop", "jazz", "electronic", "ambient", "other"],
+        options=GENRES,
         index=genre_index,
     )
